@@ -5,22 +5,24 @@ const path = require('path');
 module.exports = {
   entry: './src/index.tsx',
   output: {
-    filename: 'receipt.js',
+    filename: 'altinn-app-frontend.js',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.css', '.scss'],
     alias: {
-      'altinn-shared': path.resolve(__dirname, '../shared/src'),
-      utils: path.resolve(__dirname, './src/utils'),
-      features: path.resolve(__dirname, './src/features'),
-      testConfig: path.resolve(__dirname, './testConfig'),
+      'altinn-shared': path.resolve(__dirname, './../shared/src'),
+      src: path.resolve(__dirname, './src'),
     },
   },
   module: {
     rules: [
       {
         test: /\.jsx?/,
-        exclude: /node_modules/,
+        include: [
+          path.resolve(__dirname, './src'),
+          path.resolve(__dirname, '../node_modules/ajv'),
+          path.resolve(__dirname, '../node_modules/ajv-formats'),
+        ],
         use: {
           loader: 'babel-loader',
         },
@@ -48,7 +50,7 @@ module.exports = {
   plugins: [
     new ForkTsCheckerWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'receipt.css',
+      filename: 'altinn-app-frontend.css',
     }),
   ],
 };
