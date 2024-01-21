@@ -126,6 +126,8 @@ namespace KubernetesWrapper.Services.Implementation
                     deployment.Release = release;
                 }
 
+                deployment.Status = element.Status;
+
                 mappedList.Add(deployment);
             }
 

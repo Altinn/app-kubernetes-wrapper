@@ -1,3 +1,6 @@
+using k8s;
+using k8s.Models;
+
 namespace KubernetesWrapper.Models
 {
     /// <summary>
@@ -14,5 +17,10 @@ namespace KubernetesWrapper.Models
         /// Gets or sets release name
         /// </summary>
         public string Release { get; set; }
+
+        /// <summary>
+        /// Gets or sets status
+        /// </summary>
+        public V1DeploymentStatus Status { get; set; }
     }
 }
