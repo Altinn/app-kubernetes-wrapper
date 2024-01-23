@@ -19,8 +19,13 @@ namespace KubernetesWrapper.Models
         public string Release { get; set; }
 
         /// <summary>
-        /// Gets or sets status
+        /// Gets or sets the status
         /// </summary>
         public V1DeploymentStatus Status { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of desired pods
+        /// </summary>
+        public int? Replicas { get; set; }
     }
 }
