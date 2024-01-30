@@ -39,7 +39,7 @@ namespace KubernetesWrapper.Controllers
         {
             try
             {
-                var deployments = await _apiWrapper.GetDeployedResources(ResourceType.Deployment, null, null, fieldSelector, labelSelector);
+                var deployments = await _apiWrapper.GetDeployedResources(ResourceType.Deployment, fieldSelector, labelSelector);
                 return Ok(deployments);
             }
             catch (Exception e)

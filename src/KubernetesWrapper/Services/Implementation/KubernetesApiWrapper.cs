@@ -36,26 +36,19 @@ namespace KubernetesWrapper.Services.Implementation
         /// <inheritdoc/>
         public async Task<IList<T>> GetDeployedResources(
             ResourceType resourceType,
-            string continueParameter,
-            bool? allowWatchBookmarks,
             string fieldSelector,
-            string labelSelector,
-            int? limit,
-            string resourceVersion,
-            int? timeoutSeconds,
-            bool? watch,
-            bool? pretty)
+            string labelSelector)
         {
             IList<T> mappedResources = new List<T>();
 
             switch (resourceType)
             {
                 case ResourceType.Deployment:
-                    V1DeploymentList deployments = await _client.ListNamespacedDeploymentAsync("default", allowWatchBookmarks, continueParameter, fieldSelector, labelSelector, limit, resourceVersion, null, timeoutSeconds, watch, pretty);
+                    V1DeploymentList deployments = await _client.ListNamespacedDeploymentAsync("default", fieldSelector: fieldSelector, labelSelector: labelSelector);
                     mappedResources = MapDeployments(deployments.Items).Cast<T>().ToList();
                     break;
                 case ResourceType.DaemonSet:
-                    V1DaemonSetList deamonSets = await _client.ListNamespacedDaemonSetAsync("default", allowWatchBookmarks, continueParameter, fieldSelector, labelSelector, limit, resourceVersion, null, timeoutSeconds, watch, pretty);
+                    V1DaemonSetList deamonSets = await _client.ListNamespacedDaemonSetAsync("default", fieldSelector: fieldSelector, labelSelector: labelSelector);
                     mappedResources = MapDaemonSets(deamonSets.Items).Cast<T>().ToList();
                     break;
             }

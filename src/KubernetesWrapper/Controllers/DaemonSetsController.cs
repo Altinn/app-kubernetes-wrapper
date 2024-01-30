@@ -39,7 +39,7 @@ namespace KubernetesWrapper.Controllers
         {
             try
             {
-                var daemonSets = await _apiWrapper.GetDeployedResources(ResourceType.DaemonSet, null, null, fieldSelector, labelSelector);
+                var daemonSets = await _apiWrapper.GetDeployedResources(ResourceType.DaemonSet, fieldSelector, labelSelector);
                 return Ok(daemonSets);
             }
             catch (Exception e)
