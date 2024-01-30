@@ -167,7 +167,7 @@ namespace KubernetesWrapper.Services.Implementation
                 }
             }
 
-            if (progressingCondition.Reason == "DeploymentPaused")
+            if (progressingCondition?.Reason == "DeploymentPaused")
             {
                 return DeploymentStatus.Paused;
             }
