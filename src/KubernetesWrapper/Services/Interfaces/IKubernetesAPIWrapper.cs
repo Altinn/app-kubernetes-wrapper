@@ -5,7 +5,8 @@ namespace KubernetesWrapper.Services.Interfaces
     /// <summary>
     /// Interface for the kubernetes api wrapper
     /// </summary>
-    public interface IKubernetesApiWrapper
+    public interface IKubernetesApiWrapper<T>
+        where T : DeployedResource
     {
         /// <summary>
         /// Gets a list of deployed resources of a given type in the cluster. Parameters are described in further detail in the kubernetes api doc.
@@ -21,7 +22,7 @@ namespace KubernetesWrapper.Services.Interfaces
         /// <param name="watch">Watch for changes to the described resources and return them as a stream of add, update, and remove notifications. Specify resourceVersion.</param>
         /// <param name="pretty">If 'true', then the output is pretty printed.</param>
         /// <returns>A list of deployments</returns>
-        Task<IList<DeployedResource>> GetDeployedResources(
+        Task<IList<T>> GetDeployedResources(
             ResourceType resourceType,
             string continueParameter = null,
             bool? allowWatchBookmarks = null,

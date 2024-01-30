@@ -1,3 +1,4 @@
+using KubernetesWrapper.Models;
 using KubernetesWrapper.Services.Interfaces;
 
 using Microsoft.AspNetCore.Cors;
@@ -12,7 +13,7 @@ namespace KubernetesWrapper.Controllers
     [ApiController]
     public class DaemonSetsController : ControllerBase
     {
-        private readonly IKubernetesApiWrapper _apiWrapper;
+        private readonly IKubernetesApiWrapper<DaemonSet> _apiWrapper;
         private readonly ILogger _logger;
 
         /// <summary>
@@ -20,7 +21,7 @@ namespace KubernetesWrapper.Controllers
         /// </summary>
         /// <param name="apiWrapper">The kubernetes api wrapper client</param>
         /// <param name="logger">The logger</param>
-        public DaemonSetsController(IKubernetesApiWrapper apiWrapper, ILogger<DaemonSetsController> logger)
+        public DaemonSetsController(IKubernetesApiWrapper<DaemonSet> apiWrapper, ILogger<DaemonSetsController> logger)
         {
             _apiWrapper = apiWrapper;
             _logger = logger;
@@ -38,7 +39,7 @@ namespace KubernetesWrapper.Controllers
         {
             try
             {
-                var daemonSets = await _apiWrapper.GetDeployedResources(Models.ResourceType.DaemonSet, null, null, fieldSelector, labelSelector);
+                var daemonSets = await _apiWrapper.GetDeployedResources(ResourceType.DaemonSet, null, null, fieldSelector, labelSelector);
                 return Ok(daemonSets);
             }
             catch (Exception e)

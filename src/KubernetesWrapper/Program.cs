@@ -53,7 +53,7 @@ static void RegisterServices(IServiceCollection services)
         });
     });
     services.AddControllers();
-    services.AddSingleton<IKubernetesApiWrapper, KubernetesApiWrapper>();
+    services.AddSingleton(typeof(IKubernetesApiWrapper<>), typeof(KubernetesApiWrapper<>));
 
     services.AddSwaggerGen(c =>
     {

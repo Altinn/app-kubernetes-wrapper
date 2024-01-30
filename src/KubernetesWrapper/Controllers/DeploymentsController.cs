@@ -1,3 +1,4 @@
+using KubernetesWrapper.Models;
 using KubernetesWrapper.Services.Interfaces;
 
 using Microsoft.AspNetCore.Cors;
@@ -12,7 +13,7 @@ namespace KubernetesWrapper.Controllers
     [ApiController]
     public class DeploymentsController : ControllerBase
     {
-        private readonly IKubernetesApiWrapper _apiWrapper;
+        private readonly IKubernetesApiWrapper<Deployment> _apiWrapper;
         private readonly ILogger _logger;
 
         /// <summary>
@@ -20,7 +21,7 @@ namespace KubernetesWrapper.Controllers
         /// </summary>
         /// <param name="apiWrapper">The kubernetes api wrapper client</param>
         /// <param name="logger">The logger</param>
-        public DeploymentsController(IKubernetesApiWrapper apiWrapper, ILogger<DeploymentsController> logger)
+        public DeploymentsController(IKubernetesApiWrapper<Deployment> apiWrapper, ILogger<DeploymentsController> logger)
         {
             _apiWrapper = apiWrapper;
             _logger = logger;
@@ -38,7 +39,7 @@ namespace KubernetesWrapper.Controllers
         {
             try
             {
-                var deployments = await _apiWrapper.GetDeployedResources(Models.ResourceType.Deployment, null, null, fieldSelector, labelSelector);
+                var deployments = await _apiWrapper.GetDeployedResources(ResourceType.Deployment, null, null, fieldSelector, labelSelector);
                 return Ok(deployments);
             }
             catch (Exception e)
