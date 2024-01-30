@@ -36,8 +36,8 @@ namespace KubernetesWrapper.Services.Implementation
         /// <inheritdoc/>
         public async Task<IList<T>> GetDeployedResources(
             ResourceType resourceType,
-            string fieldSelector,
-            string labelSelector)
+            string fieldSelector = null,
+            string labelSelector = null)
         {
             IList<T> mappedResources = new List<T>();
 
