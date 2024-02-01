@@ -13,15 +13,15 @@ namespace KubernetesWrapper.Services.Implementation
         Progressing,
 
         /// <summary>
-        /// Represents a partially available deployment.
-        /// </summary>
-        PartiallyAvailable,
-
-        /// <summary>
-        /// Represents an available and completed deployment.
-        /// <see href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#complete-deployment"/>
+        /// Represents an available deployment.
         /// </summary>
         Available,
+
+        /// <summary>
+        /// Represents a completed deployment.
+        /// <see href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#complete-deployment"/>
+        /// </summary>
+        Completed,
 
         /// <summary>
         /// Represents a paused deployment.

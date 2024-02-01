@@ -147,11 +147,11 @@ namespace KubernetesWrapper.Services.Implementation
                 {
                     if (progressingCondition.Reason == "NewReplicaSetAvailable")
                     {
-                        return DeploymentStatus.Available;
+                        return DeploymentStatus.Completed;
                     }
                     else
                     {
-                        return DeploymentStatus.PartiallyAvailable;
+                        return DeploymentStatus.Available;
                     }
                 }
                 else
