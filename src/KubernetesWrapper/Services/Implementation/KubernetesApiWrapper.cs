@@ -121,6 +121,7 @@ namespace KubernetesWrapper.Services.Implementation
                 }
 
                 deployment.Status = GetDeploymentStatus(element).ToString();
+                deployment.Available = element.Status.Conditions.Any(condition => condition.Type == "Available" && condition.Status == "True");
 
                 int desiredReplicas = element.Spec.Replicas ?? 0;
                 int availableReplicas = element.Status.AvailableReplicas ?? 0;
@@ -142,17 +143,9 @@ namespace KubernetesWrapper.Services.Implementation
             var progressingCondition = element.Status.Conditions.FirstOrDefault(condition => condition.Type == "Progressing");
             if (progressingCondition?.Status == "True")
             {
-                var available = element.Status.Conditions.Any(condition => condition.Type == "Available" && condition.Status == "True");
-                if (available)
+                if (progressingCondition.Reason == "NewReplicaSetAvailable")
                 {
-                    if (progressingCondition.Reason == "NewReplicaSetAvailable")
-                    {
-                        return DeploymentStatus.Completed;
-                    }
-                    else
-                    {
-                        return DeploymentStatus.Available;
-                    }
+                    return DeploymentStatus.Completed;
                 }
                 else
                 {
