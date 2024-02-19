@@ -13,11 +13,6 @@ namespace KubernetesWrapper.Services.Implementation
         Progressing,
 
         /// <summary>
-        /// Represents an available deployment.
-        /// </summary>
-        Available,
-
-        /// <summary>
         /// Represents a completed deployment.
         /// <see href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#complete-deployment"/>
         /// </summary>
