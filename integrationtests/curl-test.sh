@@ -3,7 +3,7 @@ kubectl wait deployment -n default kuberneteswrapper --for condition=Available=T
 kubectl port-forward svc/kuberneteswrapper 8080:8080 &
 PORTFORWARD_PID=$!
 sleep 5 # Wait for portforward to be ready
-expectedDeployment='[{"version":"1.23.2-alpine","release":"dummy-deployment","status":"Completed","available":true,"availabilityPercentage":100},{"version":"local","release":"kuberneteswrapper","status":"Completed","available":true,"availabilityPercentage":100}]'
+expectedDeployment='[{"version":"1.23.2-alpine","release":"dummy-deployment","status":"Completed"},{"version":"local","release":"kuberneteswrapper","status":"Completed"}]'
 expectedDaemonsets='[{"version":"1.23.2-alpine","release":"dummy-daemonset"}]'
 actualDeployment=$(curl http://localhost:8080/api/v1/deployments --silent)
 test $expectedDeployment = $actualDeployment
