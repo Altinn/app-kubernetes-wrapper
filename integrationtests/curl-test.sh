@@ -5,7 +5,7 @@ PORTFORWARD_PID=$!
 sleep 5 # Wait for portforward to be ready
 expectedDeployment='[{"version":"1.23.2-alpine","release":"dummy-deployment","status":"Completed","available":true,"availabilityPercentage":100},{"version":"local","release":"kuberneteswrapper","status":"Completed","available":true,"availabilityPercentage":100}]'
 expectedDaemonsets='[{"version":"1.23.2-alpine","release":"dummy-daemonset"}]'
-actualDeployment=$(curl http://localhost:8080/api/v1/deployments --silent)
+actualDeployment=$(curl http://localhost:8080/api/v1/deployments --silent | awk '{gsub(/"statusDate":"[^"]+",/,"")}1')
 test $expectedDeployment = $actualDeployment
 if [ $? -gt 0 ]
 then

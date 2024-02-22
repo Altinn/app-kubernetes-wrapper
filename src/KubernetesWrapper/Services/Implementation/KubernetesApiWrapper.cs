@@ -121,6 +121,7 @@ namespace KubernetesWrapper.Services.Implementation
                 }
 
                 deployment.Status = GetDeploymentStatus(element).ToString();
+                deployment.StatusDate = element.Status.Conditions.FirstOrDefault(condition => condition.Type == "Progressing")?.LastTransitionTime;
                 deployment.Available = element.Status.Conditions.Any(condition => condition.Type == "Available" && condition.Status == "True");
 
                 int desiredReplicas = element.Spec.Replicas ?? 0;

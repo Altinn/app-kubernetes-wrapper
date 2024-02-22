@@ -14,6 +14,11 @@ namespace KubernetesWrapper.Models
         public string Status { get; set; }
 
         /// <summary>
+        /// Gets or sets the status date of the deployment.
+        /// </summary>
+        public DateTime? StatusDate { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the resource is available.
         /// </summary>
         public bool Available { get; set; }
