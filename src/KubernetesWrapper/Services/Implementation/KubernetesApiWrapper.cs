@@ -122,11 +122,6 @@ namespace KubernetesWrapper.Services.Implementation
 
                 deployment.Status = GetDeploymentStatus(element).ToString();
                 deployment.StatusDate = element.Status.Conditions.FirstOrDefault(condition => condition.Type == "Progressing")?.LastTransitionTime;
-                deployment.Available = element.Status.Conditions.Any(condition => condition.Type == "Available" && condition.Status == "True");
-
-                int desiredReplicas = element.Spec.Replicas ?? 0;
-                int availableReplicas = element.Status.AvailableReplicas ?? 0;
-                deployment.AvailabilityPercentage = (int)Math.Round((double)availableReplicas / desiredReplicas * 100, MidpointRounding.ToEven);
 
                 mappedList.Add(deployment);
             }
