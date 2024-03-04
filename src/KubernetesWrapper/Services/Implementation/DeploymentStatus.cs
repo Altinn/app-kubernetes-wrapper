@@ -1,9 +1,12 @@
+using System.Text.Json.Serialization;
+
 namespace KubernetesWrapper.Services.Implementation
 {
     /// <summary>
     /// Represents the status of a deployment in Kubernetes.
     /// <see href="https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#deployment-status"/>
     /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DeploymentStatus
     {
         /// <summary>

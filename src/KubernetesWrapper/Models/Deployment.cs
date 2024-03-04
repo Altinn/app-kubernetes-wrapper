@@ -1,4 +1,5 @@
 using k8s.Models;
+using KubernetesWrapper.Services.Implementation;
 
 namespace KubernetesWrapper.Models
 {
@@ -11,7 +12,7 @@ namespace KubernetesWrapper.Models
         /// Gets or sets the status of the deployment.
         /// This represents the current state of the deployment in the Kubernetes cluster, such as 'Available', 'Progressing', 'Failed', etc.
         /// </summary>
-        public string Status { get; set; }
+        public DeploymentStatus Status { get; set; }
 
         /// <summary>
         /// Gets or sets the status date of the deployment.
