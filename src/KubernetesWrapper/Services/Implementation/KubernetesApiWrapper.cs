@@ -120,7 +120,7 @@ namespace KubernetesWrapper.Services.Implementation
                     deployment.Release = release;
                 }
 
-                deployment.Status = GetDeploymentStatus(element).ToString();
+                deployment.Status = GetDeploymentStatus(element);
                 deployment.StatusDate = element.Status.Conditions.FirstOrDefault(condition => condition.Type == "Progressing")?.LastTransitionTime;
 
                 mappedList.Add(deployment);
