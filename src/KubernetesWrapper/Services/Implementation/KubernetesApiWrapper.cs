@@ -9,16 +9,17 @@ namespace KubernetesWrapper.Services.Implementation
     /// <summary>
     ///  An implementation of the Kubernetes API wrapper
     /// </summary>
-    public class KubernetesApiWrapper : IKubernetesApiWrapper
+    public class KubernetesApiWrapper<T> : IKubernetesApiWrapper<T>
+        where T : DeployedResource
     {
         private readonly Kubernetes _client;
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KubernetesApiWrapper"/> class
+        /// Initializes a new instance of the <see cref="KubernetesApiWrapper{T}"/> class
         /// </summary>
         /// <param name="logger">The logger</param>
-        public KubernetesApiWrapper(ILogger<KubernetesApiWrapper> logger)
+        public KubernetesApiWrapper(ILogger<KubernetesApiWrapper<T>> logger)
         {
             _logger = logger;
             try
@@ -33,29 +34,22 @@ namespace KubernetesWrapper.Services.Implementation
         }
 
         /// <inheritdoc/>
-        async Task<IList<DeployedResource>> IKubernetesApiWrapper.GetDeployedResources(
+        public async Task<IList<T>> GetDeployedResources(
             ResourceType resourceType,
-            string continueParameter,
-            bool? allowWatchBookmarks,
-            string fieldSelector,
-            string labelSelector,
-            int? limit,
-            string resourceVersion,
-            int? timeoutSeconds,
-            bool? watch,
-            bool? pretty)
+            string fieldSelector = null,
+            string labelSelector = null)
         {
-            IList<DeployedResource> mappedResources = new List<DeployedResource>();
+            IList<T> mappedResources = new List<T>();
 
             switch (resourceType)
             {
                 case ResourceType.Deployment:
-                    V1DeploymentList deployments = await _client.ListNamespacedDeploymentAsync("default", allowWatchBookmarks, continueParameter, fieldSelector, labelSelector, limit, resourceVersion, null, null, timeoutSeconds, watch, pretty);
-                    mappedResources = MapDeployments(deployments.Items);
+                    V1DeploymentList deployments = await _client.ListNamespacedDeploymentAsync("default", fieldSelector: fieldSelector, labelSelector: labelSelector);
+                    mappedResources = MapDeployments(deployments.Items).Cast<T>().ToList();
                     break;
                 case ResourceType.DaemonSet:
-                    V1DaemonSetList deamonSets = await _client.ListNamespacedDaemonSetAsync("default", allowWatchBookmarks, continueParameter, fieldSelector, labelSelector, limit, resourceVersion, null, null, timeoutSeconds, watch, pretty);
-                    mappedResources = MapDaemonSets(deamonSets.Items);
+                    V1DaemonSetList deamonSets = await _client.ListNamespacedDaemonSetAsync("default", fieldSelector: fieldSelector, labelSelector: labelSelector);
+                    mappedResources = MapDaemonSets(deamonSets.Items).Cast<T>().ToList();
                     break;
             }
 
@@ -66,9 +60,9 @@ namespace KubernetesWrapper.Services.Implementation
         /// Maps a list of k8s.Models.V1DaemonSet to DaemonSet
         /// </summary>
         /// <param name="list">The list to be mapped</param>
-        private static IList<DeployedResource> MapDaemonSets(IList<V1DaemonSet> list)
+        private static IList<DaemonSet> MapDaemonSets(IList<V1DaemonSet> list)
         {
-            IList<DeployedResource> mappedList = new List<DeployedResource>();
+            IList<DaemonSet> mappedList = new List<DaemonSet>();
             if (list == null || list.Count == 0)
             {
                 return mappedList;
@@ -98,9 +92,9 @@ namespace KubernetesWrapper.Services.Implementation
         /// Maps a list of k8s.Models.V1Deployment to Deployment
         /// </summary>
         /// <param name="list">The list to be mapped</param>
-        private static IList<DeployedResource> MapDeployments(IList<V1Deployment> list)
+        private static IList<Deployment> MapDeployments(IList<V1Deployment> list)
         {
-            IList<DeployedResource> mappedList = new List<DeployedResource>();
+            IList<Deployment> mappedList = new List<Deployment>();
             if (list == null || list.Count == 0)
             {
                 return mappedList;
@@ -126,10 +120,41 @@ namespace KubernetesWrapper.Services.Implementation
                     deployment.Release = release;
                 }
 
+                deployment.Status = GetDeploymentStatus(element);
+                deployment.StatusDate = element.Status.Conditions.FirstOrDefault(condition => condition.Type == "Progressing")?.LastTransitionTime;
+
                 mappedList.Add(deployment);
             }
 
             return mappedList;
+        }
+
+        /// <summary>
+        /// Determines the status of a Kubernetes deployment.
+        /// </summary>
+        /// <param name="element">The V1Deployment object representing the Kubernetes deployment.</param>
+        /// <returns>A DeploymentStatus enum value representing the status of the deployment.</returns>
+        private static DeploymentStatus GetDeploymentStatus(V1Deployment element)
+        {
+            var progressingCondition = element.Status.Conditions.FirstOrDefault(condition => condition.Type == "Progressing");
+            if (progressingCondition?.Status == "True")
+            {
+                if (progressingCondition.Reason == "NewReplicaSetAvailable")
+                {
+                    return DeploymentStatus.Completed;
+                }
+                else
+                {
+                    return DeploymentStatus.Progressing;
+                }
+            }
+
+            if (progressingCondition?.Reason == "DeploymentPaused")
+            {
+                return DeploymentStatus.Paused;
+            }
+
+            return DeploymentStatus.Failed;
         }
     }
 }
