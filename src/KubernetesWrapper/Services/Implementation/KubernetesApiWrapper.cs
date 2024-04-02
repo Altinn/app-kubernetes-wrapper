@@ -139,7 +139,8 @@ namespace KubernetesWrapper.Services.Implementation
             var progressingCondition = element.Status.Conditions.FirstOrDefault(condition => condition.Type == "Progressing");
             if (progressingCondition?.Status == "True")
             {
-                if (progressingCondition.Reason == "NewReplicaSetAvailable")
+                var isCompleteDeployment = element.Status.Replicas == element.Status.UpdatedReplicas && progressingCondition.Reason == "NewReplicaSetAvailable";
+                if (isCompleteDeployment)
                 {
                     return DeploymentStatus.Completed;
                 }
